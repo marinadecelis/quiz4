@@ -32,6 +32,14 @@ var sequelize = new Sequelize(DB_name, user, pwd,
 );
 
 
+//Creo que en estas líneas está mal mi código que afecta al json
+
+//Importar definicion de la tabla QUIZ
+//var quiz_paz = path.join(__dirname,'quiz');
+//var Quiz = sequelize.import(quiz_path);
+
+
+
 
 //usar BBDD SQlite:
 var sequelize = new Sequelize(null,null,null,
@@ -40,8 +48,17 @@ var sequelize = new Sequelize(null,null,null,
 						
 //Importar la definición de la tabla Quiz en quiz.js
 var Quiz = sequelize.import(path.join(__dirname,'quiz'));
-exports.Quiz = Quiz; //exportar definición de tabla quiz
 
+//
+//Importar definicion de la tabla comment
+var comment_path = path.join(__dirname,'comment');
+var Comment = sequelize.import(comment_path);
+
+Comment.belongsTo(Quiz);
+Quiz.hasMany(Comment);
+
+exports.Quiz = Quiz; //exportar definición de tabla quiz
+exports.Comment = Comment;
 // sequelize.sync() crea e inicializa tabla de preguntas en DB
 sequelize.sync().then(function() {
 	// success(..) ejecuta el manejador una vez creada la tabla
