@@ -43,6 +43,33 @@ app.use(function(req, res, next) {
 	next();
 });
 
+//Gestion-sesion
+app.use(function(req, res, next) {
+	if(req.session.sessionCaducada) req.session.sessionCaducada=false;
+	
+	//
+	if(req.session.user) {
+		var tiempoAct = new Date().getTime();
+		if(req.session.tiempo) {
+			var diferenciaTiempo = Math.floor((tiempoAct-req.session.tiempo)/1000); 
+			if(diferenciaTiempo > 120) {
+				delete req.session.user; 
+				delete req.session.tiempo;
+	
+				req.session.sessionCaducada=true;
+			} else { 
+				req.session.tiempo = tiempoAct;
+				if(req.path.match(/\/logout/)) delete req.session.tiempo;
+			}
+		}else req.session.tiempo = tiempoAct;
+	}
+	next();
+});
+
+
+
+
+
 
 
 app.use('/', routes);
